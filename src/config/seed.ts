@@ -27,7 +27,7 @@ export async function seedDatabase() {
         for (let i = 0; i < USER_COUNT; i++) {
             const firstName = faker.person.firstName();
             const lastName = faker.person.lastName();
-            const gender = faker.person.gender();
+            const gender = faker.person.sex();
 
             users.push({
                 username: faker.internet.username({ firstName, lastName }),
@@ -53,6 +53,11 @@ export async function seedDatabase() {
                 price: parseFloat(faker.commerce.price()),
                 stock: faker.number.int({ min: 0, max: 250 }),
                 category: faker.commerce.department(),
+                image: faker.image.url(),
+                rating: {
+                    rate: faker.number.float({ min: 1, max: 5, multipleOf: 0.1 }),
+                    count: faker.number.int({ min: 0, max: 500 }),
+                },
             });
         }
         await Product.bulkCreate(products, { ignoreDuplicates: true });

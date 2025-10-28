@@ -1,15 +1,10 @@
-// controllers/userController.ts
 
 import { Request, Response } from 'express';
 // Import all new CUD functions
 import { getAllUsers, getUserById, createUser, updateUser, deleteUser } from '../service/userService.js'; 
 
-// --- Existing READ methods (R) ---
-// ... (listUsers and getOneUser remain the same as before) ...
-
 async function listUsers(req: Request, res: Response) {
-    // ... (implementation here)
-    try {
+     try {
         const users = await getAllUsers();
         res.status(200).json({ status: 'success', results: users.length, data: users });
     } catch (error) {
@@ -34,7 +29,7 @@ async function getOneUser(req: Request, res: Response) {
 // --- CREATE (C) ---
 async function createNewUser(req: Request, res: Response) {
     try {
-        // Basic validation check
+       
         if (!req.body.firstName || !req.body.lastName) {
             return res.status(400).json({ status: 'error', message: 'Missing required fields (firstName, lastName).' });
         }
@@ -78,9 +73,6 @@ async function deleteExistingUser(req: Request, res: Response) {
         if (isNaN(userId)) return res.status(400).json({ status: 'error', message: 'Invalid user ID format.' });
         
         const deletedUser = await deleteUser(userId);
-        
-        // 204 No Content is standard for a successful DELETE, but 200 is also common 
-        // when returning the deleted object.
         res.status(200).json({
             status: 'success',
             message: `User ${userId} deleted successfully (mocked).`,
@@ -96,7 +88,7 @@ async function deleteExistingUser(req: Request, res: Response) {
 export {
     listUsers,
     getOneUser,
-    createNewUser, // <-- NEW
-    updateExistingUser, // <-- NEW
-    deleteExistingUser // <-- NEW
+    createNewUser,
+    updateExistingUser,
+    deleteExistingUser
 };

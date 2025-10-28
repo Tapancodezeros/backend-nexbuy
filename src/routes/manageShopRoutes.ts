@@ -1,11 +1,5 @@
 import express from 'express';
-import {
-    listShops,
-    getOneShop,
-    createNewShop,
-    updateExistingShop,
-    deleteExistingShop
-} from '../controllers/manageShopController.js';
+import {listShops,getOneShop,createNewShop,updateExistingShop,deleteExistingShop} from '../controllers/manageShopController.js';
 
 const router = express.Router();
 

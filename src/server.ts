@@ -2,7 +2,6 @@ import express, { Request, Response } from 'express';
 import productRouter from './routes/productRoutes.js';
 import userRouter from './routes/userRoutes.js';
 import manageShopRouter from './routes/manageShopRoutes.js';
-
 import { connectDB, syncModels } from './config/database.js';
 import { seedDatabase } from './config/seed.js';
 
@@ -31,8 +30,8 @@ app.get('/', (req: Request, res: Response) => {
 });
 
 
-app.use('/api/v1/users', userRouter);
-app.use('/api/v1/products', productRouter);
-app.use('/api/v1/shops', manageShopRouter);
+app.use('/api/users', userRouter);
+app.use('/api/products', productRouter);
+app.use('/api/shops', manageShopRouter);
 
 connectDB().then(() => initializeApp());

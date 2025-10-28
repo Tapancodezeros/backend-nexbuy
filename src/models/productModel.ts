@@ -1,6 +1,11 @@
 import { DataTypes, Model, Optional } from 'sequelize';
 import { sequelize } from '../config/database.js';
 
+interface Rating {
+    rate: number;
+    count: number;
+}
+
 interface ProductAttributes {
     id: number;
     title: string;
@@ -8,6 +13,8 @@ interface ProductAttributes {
     price: number;
     stock: number;
     category?: string; 
+    image: string;
+    rating: Rating;
 }
 
 interface ProductCreationAttributes extends Optional<ProductAttributes, 'id' | 'description' | 'category'> {}
@@ -19,6 +26,8 @@ class Product extends Model<ProductAttributes, ProductCreationAttributes> implem
     public price!: number;
     public stock!: number;
     public category?: string;
+    public image!: string;
+    public rating!: Rating;
 
     public readonly createdAt!: Date;
     public readonly updatedAt!: Date;
@@ -50,6 +59,25 @@ Product.init({
     category: {
         type: DataTypes.STRING(100),
         allowNull: true,
+    },
+    image: {
+        type: DataTypes.STRING,
+        allowNull: false,
+        validate: {
+            isUrl: true,
+        },
+    },
+    rating: {
+        type: DataTypes.JSONB,
+        allowNull: false,
+        validate: {
+            isRatingValid(value: Rating) {
+                // The rating can be null, but if it exists, its rate must be valid.
+                if (value && (value.rate <= 0 || value.rate > 5)) {
+                    throw new Error('Rating must be greater than 0 and less than or equal to 5.');
+                }
+            }
+        }
     },
 }, {
     sequelize,
