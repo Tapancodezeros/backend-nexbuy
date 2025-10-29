@@ -1,7 +1,7 @@
 
 import { DataTypes, Model, Optional } from 'sequelize';
 import { sequelize } from '../config/database.js';
-import bcrypt from 'bcryptjs'; // Required for password hashing
+import bcrypt from 'bcryptjs'; 
 
 interface UserAttributes {
     id: number;

@@ -1,5 +1,5 @@
 import { Request, Response } from 'express';
-import {getAllProducts,getProductById,createProduct,updateProduct,deleteProduct} from '../service/productService.js'; 
+import {getAllProducts,getProductById,createProduct,updateProduct,deleteProduct, getProductsByCategory} from '../service/productService.js'; 
 
 const getProductId = (req: Request): number => Number(req.params.id);
 async function listProducts(req: Request, res: Response) {
@@ -8,6 +8,16 @@ async function listProducts(req: Request, res: Response) {
         res.status(200).json({ status: 'success', results: products.length, data: products });
     } catch (error) {
  
+        res.status(500).json({ status: 'error', message: (error as Error).message });
+    }
+}
+
+async function listProductsByCategory(req: Request, res: Response) {
+    try {
+        const category = req.params.category;
+        const products = await getProductsByCategory(category);
+        res.status(200).json({ status: 'success', results: products.length, data: products });
+    } catch (error) {
         res.status(500).json({ status: 'error', message: (error as Error).message });
     }
 }
@@ -87,4 +97,4 @@ async function deleteExistingProduct(req: Request, res: Response) {
     }
 }
 
-export { listProducts, getOneProduct, createNewProduct, updateExistingProduct, deleteExistingProduct };
+export { listProducts, getOneProduct, createNewProduct, updateExistingProduct, deleteExistingProduct, listProductsByCategory };

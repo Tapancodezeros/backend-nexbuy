@@ -3,13 +3,11 @@ import { User } from '../models/userModel.js';
 import { Product } from '../models/productModel.js';
 import { Shop } from '../models/shopModel.js';
 
-
 const USER_COUNT = 30;
 const PRODUCT_COUNT = 30;
-const SHOP_COUNT = 15;
+const SHOP_COUNT = 25;
 export async function seedDatabase() {
     try {
-        // Check if data already exists to avoid re-seeding on every server start
         const userCount = await User.count();
         const productCount = await Product.count(); 
         const shopCount = await Shop.count();
@@ -70,6 +68,7 @@ export async function seedDatabase() {
         for (let i = 0; i < USER_COUNT / 2; i++) { // Create shops for half the users
             shops.push({
                 name: faker.company.name() + ' Shop',
+                description: faker.company.catchPhrase(),
                 ownerId: existingUsers[i].id,
             });
         }

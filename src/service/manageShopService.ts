@@ -12,7 +12,7 @@ export async function getShopById(id: number) {
 }
 
 export async function createShop(shopData: any) {
-    // In a real app, you'd have more validation here
+ 
     return await Shop.create(shopData);
 }
 

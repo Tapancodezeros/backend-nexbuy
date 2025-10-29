@@ -11,6 +11,10 @@ export async function getProductById(id: number) {
     return product;
 }
 
+export async function getProductsByCategory(category: string) {
+    return await productRepository.findByCategory(category);
+}
+
 export async function createProduct(productData: any) {
     return await Product.create(productData);
 }

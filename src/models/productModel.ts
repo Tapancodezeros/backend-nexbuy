@@ -72,7 +72,6 @@ Product.init({
         allowNull: false,
         validate: {
             isRatingValid(value: Rating) {
-                // The rating can be null, but if it exists, its rate must be valid.
                 if (value && (value.rate <= 0 || value.rate > 5)) {
                     throw new Error('Rating must be greater than 0 and less than or equal to 5.');
                 }

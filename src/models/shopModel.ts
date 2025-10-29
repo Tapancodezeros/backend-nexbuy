@@ -5,6 +5,7 @@ import { User } from './userModel.js';
 interface ShopAttributes {
     id: number;
     name: string;
+    description: string;
     ownerId: number;
 }
 
@@ -13,6 +14,7 @@ interface ShopCreationAttributes extends Optional<ShopAttributes, 'id'> {}
 class Shop extends Model<ShopAttributes, ShopCreationAttributes> implements ShopAttributes {
     public id!: number;
     public name!: string;
+    public description!: string;
     public ownerId!: number;
 
     public readonly createdAt!: Date;
@@ -29,6 +31,10 @@ Shop.init({
         type: DataTypes.STRING(150),
         allowNull: false,
         unique: true,
+    },
+    description: {
+        type: DataTypes.TEXT,
+        allowNull: false,
     },
     ownerId: {
         type: DataTypes.INTEGER,

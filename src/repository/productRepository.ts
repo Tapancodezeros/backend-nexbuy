@@ -8,6 +8,14 @@ export async function findById(id: number) {
  return Product.findByPk(id);
 }
 
+export async function findByCategory(category: string) {
+    return Product.findAll({
+        where: {
+            category: category
+        }
+    });
+}
+
 export async function create(productData: any) {
  return Product.create(productData);
 }
