@@ -1,5 +1,5 @@
 import { Request, Response } from 'express';
-import {getAllProducts,getProductById,createProduct,updateProduct,deleteProduct, getProductsByCategory} from '../service/productService.js'; 
+import {getAllProducts,getProductById,createProduct,updateProduct,deleteProduct, getProductsByCategory, getAllCategories} from '../service/productService.js'; 
 
 const getProductId = (req: Request): number => Number(req.params.id);
 async function listProducts(req: Request, res: Response) {
@@ -17,6 +17,15 @@ async function listProductsByCategory(req: Request, res: Response) {
         const category = req.params.category;
         const products = await getProductsByCategory(category);
         res.status(200).json({ status: 'success', results: products.length, data: products });
+    } catch (error) {
+        res.status(500).json({ status: 'error', message: (error as Error).message });
+    }
+}
+
+async function listCategories(req: Request, res: Response) {
+    try {
+        const categories = await getAllCategories();
+        res.status(200).json({ status: 'success', results: categories.length, data: categories });
     } catch (error) {
         res.status(500).json({ status: 'error', message: (error as Error).message });
     }
@@ -97,4 +106,4 @@ async function deleteExistingProduct(req: Request, res: Response) {
     }
 }
 
-export { listProducts, getOneProduct, createNewProduct, updateExistingProduct, deleteExistingProduct, listProductsByCategory };
+export { listProducts, getOneProduct, createNewProduct, updateExistingProduct, deleteExistingProduct, listProductsByCategory, listCategories };

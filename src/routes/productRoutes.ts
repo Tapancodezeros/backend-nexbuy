@@ -1,10 +1,12 @@
 // routes/productRoutes.ts
 import express from 'express';
-import {listProducts, getOneProduct, createNewProduct, updateExistingProduct, deleteExistingProduct, listProductsByCategory} from '../controllers/productController.js';
+import {listProducts, getOneProduct, createNewProduct, updateExistingProduct, deleteExistingProduct, listProductsByCategory, listCategories} from '../controllers/productController.js';
 
 const router = express.Router();
 
 router.get('/', listProducts);
+
+router.get('/categories', listCategories);
 
 router.post('/', createNewProduct); 
 

@@ -1,26 +1,19 @@
 import express, { Request, Response } from 'express';
-import productRouter from './routes/productRoutes.js';
-import userRouter from './routes/userRoutes.js';
-import manageShopRouter from './routes/manageShopRoutes.js';
+import router from './routes/router.js';
 import { connectDB, syncModels } from './config/database.js';
 import { seedDatabase } from './config/seed.js';
 
 const app = express();
 const PORT = 3006;
 
-
 async function initializeApp() {
-
   await syncModels();
-
   await seedDatabase();
-
   // 4. Start Express server
   app.listen(PORT, () => {
     console.log(`🚀 Server running on http://localhost:${PORT}`);
   });
 }
-
 app.use(express.json());
 app.get('/', (req: Request, res: Response) => {
 
@@ -29,9 +22,5 @@ app.get('/', (req: Request, res: Response) => {
   });
 });
 
-
-app.use('/api/users', userRouter);
-app.use('/api/products', productRouter);
-app.use('/api/shops', manageShopRouter);
-
+app.use('/api', router);
 connectDB().then(() => initializeApp());

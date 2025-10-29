@@ -12,7 +12,6 @@ export async function getShopById(id: number) {
 }
 
 export async function createShop(shopData: any) {
- 
     return await Shop.create(shopData);
 }
 

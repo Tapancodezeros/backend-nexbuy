@@ -1,6 +1,4 @@
-
 import { Request, Response } from 'express';
-// Import all new CUD functions
 import { getAllUsers, getUserById, createUser, updateUser, deleteUser } from '../service/userService.js'; 
 
 async function listUsers(req: Request, res: Response) {
@@ -13,7 +11,6 @@ async function listUsers(req: Request, res: Response) {
 }
 
 async function getOneUser(req: Request, res: Response) {
-    // ... (implementation here)
     try {
         const userId = Number(req.params.id);
         if (isNaN(userId)) return res.status(400).json({ status: 'error', message: 'Invalid user ID format.' });
@@ -26,7 +23,6 @@ async function getOneUser(req: Request, res: Response) {
     }
 }
 
-// --- CREATE (C) ---
 async function createNewUser(req: Request, res: Response) {
     try {
        
@@ -35,10 +31,9 @@ async function createNewUser(req: Request, res: Response) {
         }
         
         const newUser = await createUser(req.body);
-        // 201 Created status
         res.status(201).json({
             status: 'success',
-            message: 'User created successfully (mocked).',
+            message: 'User created successfully.',
             data: newUser
         });
     } catch (error) {
@@ -46,14 +41,11 @@ async function createNewUser(req: Request, res: Response) {
     }
 }
 
-// --- UPDATE (U) ---
 async function updateExistingUser(req: Request, res: Response) {
     try {
         const userId = Number(req.params.id);
         if (isNaN(userId)) return res.status(400).json({ status: 'error', message: 'Invalid user ID format.' });
-        
         const updatedUser = await updateUser(userId, req.body);
-        
         res.status(200).json({
             status: 'success',
             message: `User ${userId} updated successfully (mocked).`,
@@ -66,7 +58,6 @@ async function updateExistingUser(req: Request, res: Response) {
     }
 }
 
-// --- DELETE (D) ---
 async function deleteExistingUser(req: Request, res: Response) {
     try {
         const userId = Number(req.params.id);
@@ -85,10 +76,4 @@ async function deleteExistingUser(req: Request, res: Response) {
     }
 }
 
-export {
-    listUsers,
-    getOneUser,
-    createNewUser,
-    updateExistingUser,
-    deleteExistingUser
-};
+export {listUsers,getOneUser,createNewUser,updateExistingUser,deleteExistingUser};

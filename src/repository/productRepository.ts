@@ -1,4 +1,5 @@
 import { Product } from '../models/productModel.js';
+import { sequelize } from '../config/database.js';
 
 export async function findAll() {
  return Product.findAll();
@@ -13,6 +14,13 @@ export async function findByCategory(category: string) {
         where: {
             category: category
         }
+    });
+}
+
+export async function findDistinctCategories() {
+    return Product.findAll({
+        attributes: [[sequelize.fn('DISTINCT', sequelize.col('category')), 'category']],
+        where: { category: { $ne: null } } // Ensure we don't get null categories
     });
 }
 
