@@ -3,13 +3,14 @@ import {listShops,getOneShop,createNewShop,updateExistingShop,deleteExistingShop
 
 const router = express.Router();
 
-router.route('/')
-    .get(listShops)
-    .post(createNewShop);
+router.get('/', listShops);
 
-router.route('/:id')
-    .get(getOneShop)
-    .patch(updateExistingShop)
-    .delete(deleteExistingShop);
+router.post('/', createNewShop);
+
+router.get('/:id', getOneShop);
+
+router.patch('/:id', updateExistingShop);
+
+router.delete('/:id', deleteExistingShop);
 
 export default router;
