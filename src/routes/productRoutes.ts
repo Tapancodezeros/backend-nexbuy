@@ -1,4 +1,4 @@
-// routes/productRoutes.ts
+
 import express from 'express';
 import {listProducts, getOneProduct, createNewProduct, updateExistingProduct, deleteExistingProduct, listProductsByCategory, listCategories} from '../controllers/productController.js';
 

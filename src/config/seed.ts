@@ -2,6 +2,7 @@ import { faker } from '@faker-js/faker';
 import { User } from '../models/userModel.js';
 import { Product } from '../models/productModel.js';
 import { Shop } from '../models/shopModel.js';
+import { MESSAGES } from '../constants/messages.js';
 
 const USER_COUNT = 30;
 const PRODUCT_COUNT = 30;
@@ -11,16 +12,11 @@ export async function seedDatabase() {
         const userCount = await User.count();
         const productCount = await Product.count(); 
         const shopCount = await Shop.count();
-        
-        // Only seed if there isn't enough data
         if (userCount >= USER_COUNT && productCount >= PRODUCT_COUNT && shopCount >= SHOP_COUNT) {
-            console.log('✅ Database already contains sufficient seed data.');
+            console.log(MESSAGES.SEED_ALREADY_DONE);
             return;
         }
-
-        console.log('🌱 Seeding database with new records...');
-
-        // --- Seed Users ---
+        console.log(MESSAGES.SEED_STARTING);
         const users = [];
         for (let i = 0; i < USER_COUNT; i++) {
             const firstName = faker.person.firstName();
@@ -32,17 +28,15 @@ export async function seedDatabase() {
                 firstName,
                 lastName,
                 email: faker.internet.email({ firstName, lastName, provider: 'nexbuy.dev', allowSpecialCharacters: false }),
-                password: faker.internet.password({ length: 10, memorable: true }), // In a real app, passwords would be more complex
+                password: faker.internet.password({ length: 10, memorable: true }),
                 age: faker.number.int({ min: 18, max: 70 }),
                 gender,
                 image: faker.image.avatar(),
             });
         }
-        // Using ignoreDuplicates to prevent errors if some records (like emails) conflict
         await User.bulkCreate(users, { ignoreDuplicates: true });
-        console.log(`🌱 Seeded ${USER_COUNT} users.`);
+        console.log(MESSAGES.SEED_USERS_SUCCESS(USER_COUNT));
 
-        // --- Seed Products ---
         const products = [];
         for (let i = 0; i < PRODUCT_COUNT; i++) {
             products.push({
@@ -59,13 +53,10 @@ export async function seedDatabase() {
             });
         }
         await Product.bulkCreate(products, { ignoreDuplicates: true });
-        console.log(`🌱 Seeded ${PRODUCT_COUNT} products.`);
-
-        // --- Seed Shops ---
+        console.log(MESSAGES.SEED_PRODUCTS_SUCCESS(PRODUCT_COUNT));
         const shops = [];
-        // Ensure there are enough users to assign as shop owners
         const existingUsers = await User.findAll({ attributes: ['id'] });
-        for (let i = 0; i < USER_COUNT / 2; i++) { // Create shops for half the users
+        for (let i = 0; i < USER_COUNT / 2; i++) { 
             shops.push({
                 name: faker.company.name() + ' Shop',
                 description: faker.company.catchPhrase(),
@@ -73,11 +64,9 @@ export async function seedDatabase() {
             });
         }
         await Shop.bulkCreate(shops, { ignoreDuplicates: true });
-        console.log(`🌱 Seeded ${Shop.count} shops.`);
-
-        console.log('✅ Database seeding completed successfully.');
-
+        console.log(MESSAGES.SEED_SHOPS_SUCCESS(await Shop.count()));
+        console.log(MESSAGES.SEED_COMPLETE);
     } catch (error) {
-        console.error('❌ Error seeding the database:', error);
+        console.error(MESSAGES.SEED_ERROR, error);
     }
 }

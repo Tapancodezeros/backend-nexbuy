@@ -1,78 +1,78 @@
 import { Request, Response } from 'express';
 import { getAllUsers, getUserById, createUser, updateUser, deleteUser } from '../service/userService.js'; 
+import { STATUS, MESSAGES, HTTP_STATUS } from '../constants/messages.js';
 
 async function listUsers(req: Request, res: Response) {
      try {
         const users = await getAllUsers();
-        res.status(200).json({ status: 'success', results: users.length, data: users });
+        res.status(HTTP_STATUS.OK).json({ status: STATUS.SUCCESS, results: users.length, data: users });
     } catch (error) {
-        res.status(500).json({ status: 'error', message: (error as Error).message });
+        res.status(HTTP_STATUS.INTERNAL_SERVER_ERROR).json({ status: STATUS.ERROR, message: (error as Error).message });
     }
 }
 
 async function getOneUser(req: Request, res: Response) {
     try {
         const userId = Number(req.params.id);
-        if (isNaN(userId)) return res.status(400).json({ status: 'error', message: 'Invalid user ID format.' });
+        if (isNaN(userId)) return res.status(HTTP_STATUS.BAD_REQUEST).json({ status: STATUS.ERROR, message: MESSAGES.USER.INVALID_ID });
         const user = await getUserById(userId);
-        res.status(200).json({ status: 'success', data: user });
+        res.status(HTTP_STATUS.OK).json({ status: STATUS.SUCCESS, data: user });
     } catch (error) {
         const errorMessage = (error as Error).message;
-        if (errorMessage.includes('not found')) return res.status(404).json({ status: 'error', message: errorMessage });
-        res.status(500).json({ status: 'error', message: 'Internal server error.' });
+        if (errorMessage.includes('not found')) return res.status(HTTP_STATUS.NOT_FOUND).json({ status: STATUS.ERROR, message: errorMessage });
+        res.status(HTTP_STATUS.INTERNAL_SERVER_ERROR).json({ status: STATUS.ERROR, message: MESSAGES.INTERNAL_SERVER_ERROR });
     }
 }
 
 async function createNewUser(req: Request, res: Response) {
-    try {
-       
+    try {       
         if (!req.body.firstName || !req.body.lastName) {
-            return res.status(400).json({ status: 'error', message: 'Missing required fields (firstName, lastName).' });
+            return res.status(HTTP_STATUS.BAD_REQUEST).json({ status: STATUS.ERROR, message: MESSAGES.USER.MISSING_FIELDS });
         }
         
         const newUser = await createUser(req.body);
-        res.status(201).json({
-            status: 'success',
-            message: 'User created successfully.',
+        res.status(HTTP_STATUS.CREATED).json({
+            status: STATUS.SUCCESS,
+            message: MESSAGES.USER.CREATED,
             data: newUser
         });
     } catch (error) {
-        res.status(500).json({ status: 'error', message: (error as Error).message });
+        res.status(HTTP_STATUS.INTERNAL_SERVER_ERROR).json({ status: STATUS.ERROR, message: (error as Error).message });
     }
 }
 
 async function updateExistingUser(req: Request, res: Response) {
     try {
         const userId = Number(req.params.id);
-        if (isNaN(userId)) return res.status(400).json({ status: 'error', message: 'Invalid user ID format.' });
+        if (isNaN(userId)) return res.status(HTTP_STATUS.BAD_REQUEST).json({ status: STATUS.ERROR, message: MESSAGES.USER.INVALID_ID });
         const updatedUser = await updateUser(userId, req.body);
-        res.status(200).json({
-            status: 'success',
-            message: `User ${userId} updated successfully (mocked).`,
+        res.status(HTTP_STATUS.OK).json({
+            status: STATUS.SUCCESS,
+            message: MESSAGES.USER.UPDATED(userId),
             data: updatedUser
         });
     } catch (error) {
         const errorMessage = (error as Error).message;
-        if (errorMessage.includes('not found')) return res.status(404).json({ status: 'error', message: errorMessage });
-        res.status(500).json({ status: 'error', message: 'Internal server error.' });
+        if (errorMessage.includes('not found')) return res.status(HTTP_STATUS.NOT_FOUND).json({ status: STATUS.ERROR, message: errorMessage });
+        res.status(HTTP_STATUS.INTERNAL_SERVER_ERROR).json({ status: STATUS.ERROR, message: MESSAGES.INTERNAL_SERVER_ERROR });
     }
 }
 
 async function deleteExistingUser(req: Request, res: Response) {
     try {
         const userId = Number(req.params.id);
-        if (isNaN(userId)) return res.status(400).json({ status: 'error', message: 'Invalid user ID format.' });
+        if (isNaN(userId)) return res.status(HTTP_STATUS.BAD_REQUEST).json({ status: STATUS.ERROR, message: MESSAGES.USER.INVALID_ID });
         
         const deletedUser = await deleteUser(userId);
-        res.status(200).json({
-            status: 'success',
-            message: `User ${userId} deleted successfully (mocked).`,
+        res.status(HTTP_STATUS.OK).json({
+            status: STATUS.SUCCESS,
+            message: MESSAGES.USER.DELETED(userId),
             data: deletedUser
         });
     } catch (error) {
         const errorMessage = (error as Error).message;
-        if (errorMessage.includes('not found')) return res.status(404).json({ status: 'error', message: errorMessage });
-        res.status(500).json({ status: 'error', message: 'Internal server error.' });
+        if (errorMessage.includes('not found')) return res.status(HTTP_STATUS.NOT_FOUND).json({ status: STATUS.ERROR, message: errorMessage });
+        res.status(HTTP_STATUS.INTERNAL_SERVER_ERROR).json({ status: STATUS.ERROR, message: MESSAGES.INTERNAL_SERVER_ERROR });
     }
 }
 

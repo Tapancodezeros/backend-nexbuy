@@ -1,20 +1,15 @@
 import { Request, Response } from 'express';
-import {
-    getAllShops,
-    getShopById,
-    createShop,
-    updateShop,
-    deleteShop
-} from '../service/manageShopService.js';
+import {getAllShops,getShopById,createShop,updateShop,deleteShop} from '../service/manageShopService.js';
+import { STATUS, MESSAGES, HTTP_STATUS } from '../constants/messages.js';
 
 const getShopId = (req: Request): number => Number(req.params.id);
 
 export async function listShops(req: Request, res: Response) {
     try {
         const shops = await getAllShops();
-        res.status(200).json({ status: 'success', results: shops.length, data: shops });
+        res.status(HTTP_STATUS.OK).json({ status: STATUS.SUCCESS, results: shops.length, data: shops });
     } catch (error) {
-        res.status(500).json({ status: 'error', message: (error as Error).message });
+        res.status(HTTP_STATUS.INTERNAL_SERVER_ERROR).json({ status: STATUS.ERROR, message: (error as Error).message });
     }
 }
 
@@ -22,28 +17,28 @@ export async function getOneShop(req: Request, res: Response) {
     try {
         const shopId = getShopId(req);
         if (isNaN(shopId)) {
-            return res.status(400).json({ status: 'error', message: 'Invalid shop ID format.' });
+            return res.status(HTTP_STATUS.BAD_REQUEST).json({ status: STATUS.ERROR, message: MESSAGES.SHOP.INVALID_ID });
         }
         const shop = await getShopById(shopId);
-        res.status(200).json({ status: 'success', data: shop });
+        res.status(HTTP_STATUS.OK).json({ status: STATUS.SUCCESS, data: shop });
     } catch (error) {
-        res.status(500).json({ status: 'error', message: (error as Error).message });
+        res.status(HTTP_STATUS.INTERNAL_SERVER_ERROR).json({ status: STATUS.ERROR, message: (error as Error).message });
     }
 }
 
 export async function createNewShop(req: Request, res: Response) {
     try {
         if (!req.body.name || !req.body.ownerId) {
-            return res.status(400).json({ status: 'error', message: 'Missing required fields (name, ownerId).' });
+            return res.status(HTTP_STATUS.BAD_REQUEST).json({ status: STATUS.ERROR, message: MESSAGES.SHOP.MISSING_FIELDS });
         }
         const newShop = await createShop(req.body);
-        res.status(201).json({
-            status: 'success',
-            message: 'Shop created successfully.',
+        res.status(HTTP_STATUS.CREATED).json({
+            status: STATUS.SUCCESS,
+            message: MESSAGES.SHOP.CREATED,
             data: newShop
         });
     } catch (error) {
-        res.status(500).json({ status: 'error', message: (error as Error).message });
+        res.status(HTTP_STATUS.INTERNAL_SERVER_ERROR).json({ status: STATUS.ERROR, message: (error as Error).message });
     }
 }
 
@@ -51,16 +46,16 @@ export async function updateExistingShop(req: Request, res: Response) {
     try {
         const shopId = getShopId(req);
         if (isNaN(shopId)) {
-            return res.status(400).json({ status: 'error', message: 'Invalid shop ID format.' });
+            return res.status(HTTP_STATUS.BAD_REQUEST).json({ status: STATUS.ERROR, message: MESSAGES.SHOP.INVALID_ID });
         }
         const updatedShop = await updateShop(shopId, req.body);
-        res.status(200).json({
-            status: 'success',
-            message: `Shop ${shopId} updated successfully.`,
+        res.status(HTTP_STATUS.OK).json({
+            status: STATUS.SUCCESS,
+            message: MESSAGES.SHOP.UPDATED(shopId),
             data: updatedShop
         });
     } catch (error) {
-        res.status(500).json({ status: 'error', message: (error as Error).message });
+        res.status(HTTP_STATUS.INTERNAL_SERVER_ERROR).json({ status: STATUS.ERROR, message: (error as Error).message });
     }
 }
 
@@ -68,11 +63,11 @@ export async function deleteExistingShop(req: Request, res: Response) {
     try {
         const shopId = getShopId(req);
         if (isNaN(shopId)) {
-            return res.status(400).json({ status: 'error', message: 'Invalid shop ID format.' });
+            return res.status(HTTP_STATUS.BAD_REQUEST).json({ status: STATUS.ERROR, message: MESSAGES.SHOP.INVALID_ID });
         }
         await deleteShop(shopId);
-        res.status(204).send();
+        res.status(HTTP_STATUS.NO_CONTENT).send();
     } catch (error) {
-        res.status(500).json({ status: 'error', message: (error as Error).message });
+        res.status(HTTP_STATUS.INTERNAL_SERVER_ERROR).json({ status: STATUS.ERROR, message: (error as Error).message });
     }
 }

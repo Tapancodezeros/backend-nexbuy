@@ -17,7 +17,7 @@ interface UserAttributes {
 } 
 interface UserCreationAttributes extends Optional<UserAttributes, 'id' | 'age' | 'refreshToken'> {}
 
-// 2. Update Model class
+// Update Model class2. 
 class User extends Model<UserAttributes, UserCreationAttributes> implements UserAttributes {
     public id!: number;
     public username!: string;

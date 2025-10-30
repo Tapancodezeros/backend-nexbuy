@@ -1,14 +1,11 @@
-// config/database.ts
 import { Sequelize } from 'sequelize';
-import * as dotenv from 'dotenv';
-dotenv.config();
-const dbName = process.env.DB_NAME || 'nexbuy_db';
-const dbUser = process.env.DB_USER || 'postgres';
-const dbHost = process.env.DB_HOST || 'localhost';
-const dbPassword = process.env.DB_PASSWORD || 'your_default_password';
 
-const sequelize = new Sequelize(dbName, dbUser, dbPassword, {
-    host: dbHost,
+import { dbConfig } from './config.js';
+import { MESSAGES } from '../constants/messages.js';
+
+const sequelize = new Sequelize(dbConfig.name, dbConfig.user, dbConfig.password, {
+    host: dbConfig.host,
+    port: dbConfig.port,
     dialect: 'postgres',
     logging: false, 
     define: {
@@ -19,16 +16,22 @@ const sequelize = new Sequelize(dbName, dbUser, dbPassword, {
 async function connectDB() {
     try {
         await sequelize.authenticate();
-        console.log('✅ PostgreSQL connection has been established successfully.');
+        console.log(MESSAGES.DB_CONNECTION_SUCCESS);
     } catch (error) {
-        console.error('❌ Unable to connect to the database:', error);
+        console.error(MESSAGES.DB_CONNECTION_ERROR, error);
 
         process.exit(1); 
     }
 }
 
 async function syncModels() {
-    await sequelize.sync({ alter: true }); 
-    console.log('✅ All models were synchronized successfully.');
+    try {
+        await sequelize.sync({ alter: true }); 
+        console.log(MESSAGES.DB_SYNC_SUCCESS);
+    } catch (error) {
+        console.error(MESSAGES.DB_SYNC_ERROR, error);
+        process.exit(1);
+    }
 }
+
 export { sequelize, connectDB, syncModels };

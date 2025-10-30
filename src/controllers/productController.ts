@@ -1,14 +1,14 @@
 import { Request, Response } from 'express';
 import {getAllProducts,getProductById,createProduct,updateProduct,deleteProduct, getProductsByCategory, getAllCategories} from '../service/productService.js'; 
+import { STATUS, MESSAGES, HTTP_STATUS } from '../constants/messages.js';
 
 const getProductId = (req: Request): number => Number(req.params.id);
 async function listProducts(req: Request, res: Response) {
     try {
         const products = await getAllProducts();
-        res.status(200).json({ status: 'success', results: products.length, data: products });
-    } catch (error) {
- 
-        res.status(500).json({ status: 'error', message: (error as Error).message });
+        res.status(HTTP_STATUS.OK).json({ status: STATUS.SUCCESS, results: products.length, data: products });
+    } catch (error) { 
+        res.status(HTTP_STATUS.INTERNAL_SERVER_ERROR).json({ status: STATUS.ERROR, message: (error as Error).message });
     }
 }
 
@@ -16,54 +16,51 @@ async function listProductsByCategory(req: Request, res: Response) {
     try {
         const category = req.params.category;
         const products = await getProductsByCategory(category);
-        res.status(200).json({ status: 'success', results: products.length, data: products });
+        res.status(HTTP_STATUS.OK).json({ status: STATUS.SUCCESS, results: products.length, data: products });
     } catch (error) {
-        res.status(500).json({ status: 'error', message: (error as Error).message });
+        res.status(HTTP_STATUS.INTERNAL_SERVER_ERROR).json({ status: STATUS.ERROR, message: (error as Error).message });
     }
 }
 
 async function listCategories(req: Request, res: Response) {
     try {
         const categories = await getAllCategories();
-        res.status(200).json({ status: 'success', results: categories.length, data: categories });
+        res.status(HTTP_STATUS.OK).json({ status: STATUS.SUCCESS, results: categories.length, data: categories });
     } catch (error) {
-        res.status(500).json({ status: 'error', message: (error as Error).message });
+        res.status(HTTP_STATUS.INTERNAL_SERVER_ERROR).json({ status: STATUS.ERROR, message: (error as Error).message });
     }
 }
 
 async function getOneProduct(req: Request, res: Response) {
     try {
         const productId = getProductId(req); 
-        
         if (isNaN(productId)) {
-            return res.status(400).json({ status: 'error', message: 'Invalid product ID format.' });
+            return res.status(HTTP_STATUS.BAD_REQUEST).json({ status: STATUS.ERROR, message: MESSAGES.PRODUCT.INVALID_ID });
         }
-        
+       
         const product = await getProductById(productId);
 
-        res.status(200).json({ status: 'success', data: product });
+        res.status(HTTP_STATUS.OK).json({ status: STATUS.SUCCESS, data: product });
     } catch (error) {
         // All service errors result in a 500 status
-        res.status(500).json({ status: 'error', message: (error as Error).message });
+        res.status(HTTP_STATUS.INTERNAL_SERVER_ERROR).json({ status: STATUS.ERROR, message: (error as Error).message });
     }
 }
 
-// --- CREATE (C) ---
 async function createNewProduct(req: Request, res: Response) {
     try {
         if (!req.body.title || !req.body.price) {
-            return res.status(400).json({ status: 'error', message: 'Missing required fields (title, price).' });
+            return res.status(HTTP_STATUS.BAD_REQUEST).json({ status: STATUS.ERROR, message: MESSAGES.PRODUCT.MISSING_FIELDS });
         }
         
         const newProduct = await createProduct(req.body);
-        res.status(201).json({
-            status: 'success',
-            message: 'Product created successfully (mocked).',
+        res.status(HTTP_STATUS.CREATED).json({
+            status: STATUS.SUCCESS,
+            message: MESSAGES.PRODUCT.CREATED,
             data: newProduct
         });
     } catch (error) {
-        // All service errors result in a 500 status
-        res.status(500).json({ status: 'error', message: (error as Error).message });
+        res.status(HTTP_STATUS.INTERNAL_SERVER_ERROR).json({ status: STATUS.ERROR, message: (error as Error).message });
     }
 }
 
@@ -71,18 +68,18 @@ async function updateExistingProduct(req: Request, res: Response) {
     try {
         const productId = getProductId(req);
         if (isNaN(productId)) {
-            return res.status(400).json({ status: 'error', message: 'Invalid product ID format.' });
+            return res.status(HTTP_STATUS.BAD_REQUEST).json({ status: STATUS.ERROR, message: MESSAGES.PRODUCT.INVALID_ID });
         }
         
         const updatedProduct = await updateProduct(productId, req.body);
         
-        res.status(200).json({
-            status: 'success',
-            message: `Product ${productId} updated successfully (mocked).`,
+        res.status(HTTP_STATUS.OK).json({
+            status: STATUS.SUCCESS,
+            message: MESSAGES.PRODUCT.UPDATED(productId),
             data: updatedProduct
         });
     } catch (error) {
-        res.status(500).json({ status: 'error', message: (error as Error).message });
+        res.status(HTTP_STATUS.INTERNAL_SERVER_ERROR).json({ status: STATUS.ERROR, message: (error as Error).message });
     }
 }
 
@@ -90,19 +87,18 @@ async function deleteExistingProduct(req: Request, res: Response) {
     try {
         const productId = getProductId(req);
         if (isNaN(productId)) {
-            return res.status(400).json({ status: 'error', message: 'Invalid product ID format.' });
+            return res.status(HTTP_STATUS.BAD_REQUEST).json({ status: STATUS.ERROR, message: MESSAGES.PRODUCT.INVALID_ID });
         }
         
         const deletedProduct = await deleteProduct(productId);
         
-        res.status(200).json({
-            status: 'success',
-            message: `Product ${productId} deleted successfully (mocked).`,
+        res.status(HTTP_STATUS.OK).json({
+            status: STATUS.SUCCESS,
+            message: MESSAGES.PRODUCT.DELETED(productId),
             data: deletedProduct
         });
     } catch (error) {
-        // All service errors result in a 500 status
-        res.status(500).json({ status: 'error', message: (error as Error).message });
+       res.status(HTTP_STATUS.INTERNAL_SERVER_ERROR).json({ status: STATUS.ERROR, message: (error as Error).message });
     }
 }
 
