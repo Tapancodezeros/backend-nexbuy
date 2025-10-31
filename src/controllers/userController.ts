@@ -1,6 +1,8 @@
 import { Request, Response } from 'express';
-import { getAllUsers, getUserById, createUser, updateUser, deleteUser } from '../service/userService.js'; 
+import { getAllUsers, getUserById, createUser, updateUser, deleteUser, loginUser } from '../service/userService.js'; 
 import { STATUS, MESSAGES, HTTP_STATUS } from '../constants/messages.js';
+import jwt from 'jsonwebtoken';
+import { User } from '../models/userModel.js';
 
 async function listUsers(req: Request, res: Response) {
      try {
@@ -26,7 +28,7 @@ async function getOneUser(req: Request, res: Response) {
 
 async function createNewUser(req: Request, res: Response) {
     try {       
-        if (!req.body.firstName || !req.body.lastName) {
+        if (!req.body.firstName || !req.body.lastName || !req.body.email || !req.body.password) {
             return res.status(HTTP_STATUS.BAD_REQUEST).json({ status: STATUS.ERROR, message: MESSAGES.USER.MISSING_FIELDS });
         }
         
@@ -76,4 +78,27 @@ async function deleteExistingUser(req: Request, res: Response) {
     }
 }
 
-export {listUsers,getOneUser,createNewUser,updateExistingUser,deleteExistingUser};
+async function login(req: Request, res: Response) {
+    try {
+        
+        const { email, password } = req.body;
+        if (!email || !password) {
+            return res.status(HTTP_STATUS.BAD_REQUEST).json({ status: STATUS.ERROR, message: MESSAGES.USER.MISSING_CREDENTIALS });
+        }
+
+        const user = await loginUser(email, password) as User;
+        
+
+        // Do not use a hardcoded secret in production. Use an environment variable.
+        const JWT_SECRET = process.env.JWT_SECRET || 'your_jwt_secret_key';
+
+        const token = jwt.sign({ id: user.id, email: user.email }, JWT_SECRET);
+
+        res.status(HTTP_STATUS.OK).json({ status: STATUS.SUCCESS, token });
+
+    } catch (error) {
+        res.status(HTTP_STATUS.UNAUTHORIZED).json({ status: STATUS.ERROR, message: (error as Error).message });
+    }
+}
+
+export {listUsers,getOneUser,createNewUser,updateExistingUser,deleteExistingUser, login};

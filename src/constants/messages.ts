@@ -44,6 +44,8 @@ export const MESSAGES = {
         DELETED: (id: number) => `User ${id} deleted successfully.`,
         NOT_FOUND: (id: number) => `User with ID ${id} not found.`,
         MISSING_FIELDS: 'Missing required fields (firstName, lastName).',
+        MISSING_CREDENTIALS: 'Email and password are required.',
+        INVALID_CREDENTIALS_LOGIN: 'Invalid email or password.',
         INVALID_ID: 'Invalid user ID format.',
     },
 
