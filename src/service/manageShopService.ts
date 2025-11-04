@@ -16,12 +16,13 @@ export async function createShop(shopData: any) {
 }
 
 export async function updateShop(id: number, updateData: any) {
-    const shop = await getShopById(id);
-    return await shop.update(updateData);
+    return await shopRepository.update(id, updateData);
 }
 
 export async function deleteShop(id: number) {
-    const shop = await getShopById(id);
-    await shop.destroy();
-    return shop;
+    return await shopRepository.remove(id);
+}
+
+export async function getShopsByOwnerId(ownerId: number) {
+    return await shopRepository.findByOwnerId(ownerId);
 }

@@ -24,11 +24,4 @@ async function remove(id: number) {
     return User.destroy({ where: { id } });
 }   
 
-export {
-    findAll,
-    findById,
-    findByEmail,
-    create,
-    update,
-    remove
-};
+export { findAll, findById, findByEmail, create, update, remove };

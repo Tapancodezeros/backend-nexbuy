@@ -6,7 +6,7 @@ import { MESSAGES } from '../constants/messages.js';
 
 const USER_COUNT = 30;
 const PRODUCT_COUNT = 30;
-const SHOP_COUNT = 25;
+const SHOP_COUNT = 35;
 export async function seedDatabase() {
     try {
         const userCount = await User.count();
@@ -34,7 +34,7 @@ export async function seedDatabase() {
                 image: faker.image.avatar(),
             });
         }
-        await User.bulkCreate(users, { ignoreDuplicates: true });
+        await User.bulkCreate(users, { ignoreDuplicates: true, individualHooks: true });
         console.log(MESSAGES.SEED_USERS_SUCCESS(USER_COUNT));
 
         const products = [];

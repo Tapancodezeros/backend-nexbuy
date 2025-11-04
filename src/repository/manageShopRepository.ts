@@ -13,19 +13,23 @@ export async function create(shopData: any) {
     return Shop.create(shopData);
 }
 
-export async function update(id: number, updateData: any) {
+export async function update(id: number, shopData: any) {
     const shop = await findById(id);
     if (!shop) {
-        throw new Error(MESSAGES.SHOP.NOT_FOUND(id));
+        return null;
     }
-    return shop.update(updateData);
+    return shop.update(shopData);
 }
 
 export async function remove(id: number) {
     const shop = await findById(id);
     if (!shop) {
-        throw new Error(MESSAGES.SHOP.NOT_FOUND(id));
+        return null;
     }
     await shop.destroy();
     return shop;
+}
+
+export async function findByOwnerId(ownerId: number) {
+    return Shop.findAll({ where: { ownerId } });
 }

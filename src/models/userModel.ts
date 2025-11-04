@@ -1,7 +1,7 @@
 
 import { DataTypes, Model, Optional } from 'sequelize';
 import { sequelize } from '../config/database.js';
-import bcrypt from 'bcryptjs'; 
+import bcrypt from 'bcrypt'; 
 
 interface UserAttributes {
     id: number;
@@ -71,11 +71,11 @@ User.init({
     },
     gender: {
         type: DataTypes.STRING(50),
-        allowNull: false,
+        allowNull: true,
     },
     image: {
         type: DataTypes.STRING,
-        allowNull: false,
+        allowNull: true,
     },
     age: {
         type: DataTypes.INTEGER,

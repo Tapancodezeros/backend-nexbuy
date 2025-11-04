@@ -12,7 +12,6 @@ const PORT = 3006;
 const corsOptions = {
   origin: [
     'http://localhost:3000', // Frontend (React/Next.js dev)
-    'https://localhost:3000', // Optional if you use HTTPS frontend
   ],
   methods: ['GET', 'POST', 'PUT', 'DELETE', 'PATCH'],
   allowedHeaders: ['Content-Type', 'Authorization'],

@@ -91,10 +91,10 @@ async function login(req: Request, res: Response) {
 
         // Do not use a hardcoded secret in production. Use an environment variable.
         const JWT_SECRET = process.env.JWT_SECRET || 'your_jwt_secret_key';
+        const id = user.id;
 
         const token = jwt.sign({ id: user.id, email: user.email }, JWT_SECRET);
-
-        res.status(HTTP_STATUS.OK).json({ status: STATUS.SUCCESS, token });
+        res.status(HTTP_STATUS.OK).json({ status: STATUS.SUCCESS, token, id });
 
     } catch (error) {
         res.status(HTTP_STATUS.UNAUTHORIZED).json({ status: STATUS.ERROR, message: (error as Error).message });

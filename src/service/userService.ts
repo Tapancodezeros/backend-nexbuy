@@ -43,11 +43,4 @@ async function loginUser(email: string, password: string): Promise<any> {
     return userWithoutPassword;
 }
 
-export {
-    getAllUsers,
-    getUserById,
-    createUser,
-    updateUser,
-    deleteUser,
-    loginUser
-};
+export {getAllUsers,getUserById,createUser,updateUser,deleteUser,loginUser};
