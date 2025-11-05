@@ -1,5 +1,6 @@
 import { DataTypes, Model, Optional } from 'sequelize';
 import { sequelize } from '../config/database.js';
+import { Shop } from './shopModel.js';
 
 interface Rating {
     rate: number;
@@ -15,6 +16,7 @@ interface ProductAttributes {
     category?: string; 
     image: string;
     rating: Rating;
+    shopId: number;
 }
 
 interface ProductCreationAttributes extends Optional<ProductAttributes, 'id' | 'description' | 'category'> {}
@@ -28,6 +30,7 @@ class Product extends Model<ProductAttributes, ProductCreationAttributes> implem
     public category?: string;
     public image!: string;
     public rating!: Rating;
+    public shopId!: number;
 
     public readonly createdAt!: Date;
     public readonly updatedAt!: Date;
@@ -76,6 +79,14 @@ Product.init({
                     throw new Error('Rating must be greater than 0 and less than or equal to 5.');
                 }
             }
+        }
+    },
+    shopId: {
+        type: DataTypes.INTEGER,
+        allowNull: false,
+        references: {
+            model: Shop,
+            key: 'id',
         }
     },
 }, {

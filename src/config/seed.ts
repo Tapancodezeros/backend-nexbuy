@@ -37,6 +37,16 @@ export async function seedDatabase() {
         await User.bulkCreate(users, { ignoreDuplicates: true, individualHooks: true });
         console.log(MESSAGES.SEED_USERS_SUCCESS(USER_COUNT));
 
+        const shops = [];
+        const existingUsers = await User.findAll({ attributes: ['id'] });
+        for (let i = 0; i < USER_COUNT / 2; i++) { 
+            shops.push({
+                name: faker.company.name() + ' Shop',
+                description: faker.company.catchPhrase(),
+                ownerId: existingUsers[i].id,
+            });
+        }
+        await Shop.bulkCreate(shops, { ignoreDuplicates: true });
         const products = [];
         for (let i = 0; i < PRODUCT_COUNT; i++) {
             products.push({
@@ -50,20 +60,11 @@ export async function seedDatabase() {
                     rate: faker.number.float({ min: 1, max: 5, multipleOf: 0.1 }),
                     count: faker.number.int({ min: 0, max: 500 }),
                 },
+                shopId: faker.number.int({ min: 1, max: USER_COUNT / 2 }),
             });
         }
         await Product.bulkCreate(products, { ignoreDuplicates: true });
         console.log(MESSAGES.SEED_PRODUCTS_SUCCESS(PRODUCT_COUNT));
-        const shops = [];
-        const existingUsers = await User.findAll({ attributes: ['id'] });
-        for (let i = 0; i < USER_COUNT / 2; i++) { 
-            shops.push({
-                name: faker.company.name() + ' Shop',
-                description: faker.company.catchPhrase(),
-                ownerId: existingUsers[i].id,
-            });
-        }
-        await Shop.bulkCreate(shops, { ignoreDuplicates: true });
         console.log(MESSAGES.SEED_SHOPS_SUCCESS(await Shop.count()));
         console.log(MESSAGES.SEED_COMPLETE);
     } catch (error) {

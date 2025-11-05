@@ -21,10 +21,16 @@ export async function findByCategory(category: string) {
     });
 }
 
+export async function findByShopId(shopId: number) {
+    return Product.findAll({
+        where: { shopId }
+    } as any);
+}
+
 export async function findDistinctCategories() {
     return Product.findAll({
         attributes: [[sequelize.fn('DISTINCT', sequelize.col('category')), 'category']],
-        where: { category: { [Op.ne]: null } } // Ensure we don't get null categories
+        where: { category: { [Op.ne]: null } } 
     });
 }
 

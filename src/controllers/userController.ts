@@ -31,7 +31,18 @@ async function createNewUser(req: Request, res: Response) {
         if (!req.body.firstName || !req.body.lastName || !req.body.email || !req.body.password) {
             return res.status(HTTP_STATUS.BAD_REQUEST).json({ status: STATUS.ERROR, message: MESSAGES.USER.MISSING_FIELDS });
         }
-        
+
+        const { firstName, lastName, email } = req.body;
+
+        if (typeof firstName !== 'string') {
+            return res.status(HTTP_STATUS.BAD_REQUEST).json({ status: STATUS.ERROR, message: 'First name must be a string.' });
+        }
+        if (typeof lastName !== 'string') {
+            return res.status(HTTP_STATUS.BAD_REQUEST).json({ status: STATUS.ERROR, message: 'Last name must be a string.' });
+        }
+        if (typeof email !== 'string') {
+            return res.status(HTTP_STATUS.BAD_REQUEST).json({ status: STATUS.ERROR, message: 'Email must be a string.' });
+        }
         const newUser = await createUser(req.body);
         res.status(HTTP_STATUS.CREATED).json({
             status: STATUS.SUCCESS,
@@ -47,6 +58,17 @@ async function updateExistingUser(req: Request, res: Response) {
     try {
         const userId = Number(req.params.id);
         if (isNaN(userId)) return res.status(HTTP_STATUS.BAD_REQUEST).json({ status: STATUS.ERROR, message: MESSAGES.USER.INVALID_ID });
+
+        const { firstName, lastName, email, age } = req.body;
+
+        if (firstName && typeof firstName !== 'string') {
+            return res.status(HTTP_STATUS.BAD_REQUEST).json({ status: STATUS.ERROR, message: 'First name must be a string.' });
+        }
+
+        if (lastName && typeof lastName !== 'string') {
+            return res.status(HTTP_STATUS.BAD_REQUEST).json({ status: STATUS.ERROR, message: 'Last name must be a string.' });
+        }
+
         const updatedUser = await updateUser(userId, req.body);
         res.status(HTTP_STATUS.OK).json({
             status: STATUS.SUCCESS,

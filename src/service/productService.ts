@@ -15,6 +15,10 @@ export async function getProductsByCategory(category: string) {
     return await productRepository.findByCategory(category);
 }
 
+export async function getProductsByShopId(shopId: number) {
+    return await productRepository.findByShopId(shopId);
+}
+
 export async function getAllCategories() {
     const categories = await productRepository.findDistinctCategories();
     return categories.map(c => c.getDataValue('category')).filter(Boolean); // Extract just the category name and filter out any falsy values

@@ -1,5 +1,5 @@
 import { Request, Response } from 'express';
-import {getAllProducts,getProductById,createProduct,updateProduct,deleteProduct, getProductsByCategory, getAllCategories} from '../service/productService.js'; 
+import {getAllProducts,getProductById,createProduct,updateProduct,deleteProduct, getProductsByCategory, getAllCategories, getProductsByShopId} from '../service/productService.js'; 
 import { STATUS, MESSAGES, HTTP_STATUS } from '../constants/messages.js';
 
 const getProductId = (req: Request): number => Number(req.params.id);
@@ -16,6 +16,19 @@ async function listProductsByCategory(req: Request, res: Response) {
     try {
         const category = req.params.category;
         const products = await getProductsByCategory(category);
+        res.status(HTTP_STATUS.OK).json({ status: STATUS.SUCCESS, results: products.length, data: products });
+    } catch (error) {
+        res.status(HTTP_STATUS.INTERNAL_SERVER_ERROR).json({ status: STATUS.ERROR, message: (error as Error).message });
+    }
+}
+
+async function listProductsByShop(req: Request, res: Response) {
+    try {
+        const shopId = Number(req.params.shopId);
+        if (isNaN(shopId)) {
+            return res.status(HTTP_STATUS.BAD_REQUEST).json({ status: STATUS.ERROR, message: MESSAGES.SHOP.INVALID_ID });
+        }
+        const products = await getProductsByShopId(shopId);
         res.status(HTTP_STATUS.OK).json({ status: STATUS.SUCCESS, results: products.length, data: products });
     } catch (error) {
         res.status(HTTP_STATUS.INTERNAL_SERVER_ERROR).json({ status: STATUS.ERROR, message: (error as Error).message });
@@ -102,4 +115,4 @@ async function deleteExistingProduct(req: Request, res: Response) {
     }
 }
 
-export { listProducts, getOneProduct, createNewProduct, updateExistingProduct, deleteExistingProduct, listProductsByCategory, listCategories };
+export { listProducts, getOneProduct, createNewProduct, updateExistingProduct, deleteExistingProduct, listProductsByCategory, listCategories, listProductsByShop };

@@ -2,6 +2,7 @@ import { Sequelize } from 'sequelize';
 
 import { dbConfig } from './config.js';
 import { MESSAGES } from '../constants/messages.js';
+import { Contact } from '../models/contactModel.js';
 
 const sequelize = new Sequelize(dbConfig.name, dbConfig.user, dbConfig.password, {
     host: dbConfig.host,
@@ -26,7 +27,7 @@ async function connectDB() {
 
 async function syncModels() {
     try {
-        await sequelize.sync({ alter: true }); 
+        await sequelize.sync({ alter: true });
         console.log(MESSAGES.DB_SYNC_SUCCESS);
     } catch (error) {
         console.error(MESSAGES.DB_SYNC_ERROR, error);

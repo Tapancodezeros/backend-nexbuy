@@ -68,4 +68,9 @@ export const MESSAGES = {
         MISSING_FIELDS: 'Missing required fields (name, ownerId).',
         INVALID_ID: 'Invalid shop ID format.',
     },
+    // Contact Messages
+    CONTACT: {
+        FORM_SUBMITTED: 'Contact form submitted successfully.',
+        MISSING_FIELDS: 'Missing required fields (fullName, email, message).',
+    },
 };

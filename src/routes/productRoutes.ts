@@ -1,6 +1,6 @@
 
 import express from 'express';
-import {listProducts, getOneProduct, createNewProduct, updateExistingProduct, deleteExistingProduct, listProductsByCategory, listCategories} from '../controllers/productController.js';
+import {listProducts, getOneProduct, createNewProduct, updateExistingProduct, deleteExistingProduct, listProductsByCategory, listCategories, listProductsByShop} from '../controllers/productController.js';
 
 const router = express.Router();
 
@@ -11,6 +11,8 @@ router.get('/categories', listCategories);
 router.post('/', createNewProduct); 
 
 router.get('/category/:category', listProductsByCategory);
+
+router.get('/shop/:shopId', listProductsByShop);
 
 router.get('/:id', getOneProduct);
 
